@@ -1,0 +1,44 @@
+Licenses
+
+CC-0
+CC-BY 3.0    http://creativecommons.org/licenses/by/3.0/legalcode
+
+
+MUSIC
+
+File name: creepy.ogg
+Source: http://opengameart.org/content/creepy
+Author: TokyoGeisha 
+License: CC-0
+
+File name:
+Source:
+Author:
+License:
+
+File name:
+Source:
+Author:
+License:
+
+SOUNDS
+
+File name: thunder1.ogg
+Source: https://www.freesound.org/people/Yoyodaman234/sounds/253953/
+Author: Yoyodaman234 https://www.freesound.org/people/Yoyodaman234/
+License: CC-0
+
+File name: thunder2.ogg
+Source: https://www.freesound.org/people/netaj/sounds/193170/
+Author: netaj https://www.freesound.org/people/netaj/
+License: CC-0
+
+File name: thunder3.ogg
+Source: https://www.freesound.org/people/IllusiaProductions/sounds/249950/
+Author: Illusia Productions https://www.freesound.org/people/IllusiaProductions/
+License: CC-BY 3.0
+
+File name: thunder4.ogg
+Source: https://www.freesound.org/people/RSilveira_88/sounds/216268/
+Author: R_Silveira_88 https://www.freesound.org/people/RSilveira_88/
+License: CC-BY 3.0
