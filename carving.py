@@ -11,6 +11,8 @@ class Carving(GameState):
         self.drawing = False
         self.pumpkin = Pumpkin()
         self.history = []
+        self.line_start = None
+        self.line_end = None
         
     def save_work_surf(self):
         self.history.append(self.pumpkin.work_surf.copy())
@@ -30,11 +32,11 @@ class Carving(GameState):
             if event.button == 1:
                 self.drawing = True
                 self.save_work_surf()
-            elif event.button == 3:
-                self.pumpkin.reset()
+                self.line_start = event.pos
         elif event.type == pg.MOUSEBUTTONUP:
             if event.button == 1:
-                self.drawing = False            
+                self.drawing = False
+                                
         elif event.type == pg.KEYUP:
             if event.key == pg.K_UP:
                 self.brush_size += 1
@@ -45,10 +47,16 @@ class Carving(GameState):
                 
     def update(self, dt):        
         if self.drawing:
+            
             mx, my = pg.mouse.get_pos()
             px, py = self.pumpkin.rect.topleft
+            line_start = self.line_start[0] - px, self.line_start[1] - py
             pos = mx - px, my - py
+            pg.draw.line(self.pumpkin.work_surf, pg.Color(0, 0, 0), line_start,
+                               pos, self.brush_size)
+            pg.draw.circle(self.pumpkin.work_surf, pg.Color(0, 0, 0), line_start, self.brush_size)
             pg.draw.circle(self.pumpkin.work_surf, pg.Color(0, 0, 0), pos, self.brush_size)
+            self.line_start = mx, my
         self.pumpkin.update(dt)
         
     def draw(self, surface):
