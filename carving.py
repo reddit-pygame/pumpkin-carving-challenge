@@ -53,7 +53,7 @@ class Carving(GameState):
             line_start = self.line_start[0] - px, self.line_start[1] - py
             pos = mx - px, my - py
             pg.draw.line(self.pumpkin.work_surf, pg.Color(0, 0, 0), line_start,
-                               pos, self.brush_size)
+                               pos, self.brush_size*2 + 3)
             pg.draw.circle(self.pumpkin.work_surf, pg.Color(0, 0, 0), line_start, self.brush_size)
             pg.draw.circle(self.pumpkin.work_surf, pg.Color(0, 0, 0), pos, self.brush_size)
             self.line_start = mx, my
