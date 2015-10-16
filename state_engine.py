@@ -27,7 +27,7 @@ class Game(object):
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]
-        self.fullscreen = True
+        self.fullscreen = False
         
     def toggle_fullscreen(self):
         self.fullscreen = not self.fullscreen

@@ -43,12 +43,51 @@ class Bat(object):
     def draw(self, surface):
         surface.blit(self.image, self.rect)
         
+  
+class Moon(object):
+    def __init__(self, time_span):
+        self.time_span = time_span
+        self.screen_rect = pg.display.get_surface().get_rect()
+        self.image = pg.transform.scale2x(prepare.GFX["moon"])
+        w, h = self.image.get_size()
+        self.rect = self.image.get_rect(topleft=(-w//2, 80))
+        
+        self.animations = pg.sprite.Group()
+        ani = Animation(y=-50, 
+                               duration=time_span//2, round_values=True,
+                               transition="out_quad")
+        ani.callback = self.go_down
+        ani.start(self.rect)
+        ani2 = Animation(x=self.screen_rect.right - w//2,
+                               duration=time_span, round_values=True,
+                               transition="linear")
+        ani2.start(self.rect)
+        self.animations.add(ani, ani2)
+        
+    def go_down(self):
+        ani = Animation(y=80, 
+                               duration=self.time_span//2, round_values=True,
+                               transition="in_quad")
+        ani.callback = self.finish
+        ani.start(self.rect)
+        self.animations.add(ani)   
+
+    def finish(self):
+        self.done = True
+        
+    def update(self, dt):
+        self.animations.update(dt)
+        
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
+
         
 class Splash(GameState):
     def __init__(self):
         super(Splash, self).__init__()
         self.animations = pg.sprite.Group()
         self.animations.add(Task(self.wake_bats, 6000))
+        self.animations.add(Task(self.fade_out, 9000))
         self.timer  = 0
         with open("bat_spots.json", "r") as f:
             points = json.load(f)
@@ -59,13 +98,17 @@ class Splash(GameState):
         
         self.shade = pg.Surface(prepare.SCREEN_SIZE).convert()
         self.shade.fill(pg.Color("gray1"))
+        self.curtain = self.shade.copy()
+        self.curtain.fill(pg.Color(10, 5, 20))
         self.shade_alpha = 255
-        
+        self.curtain_alpha = 0
+        self.curtain.set_alpha()
+        self.moon = Moon(20000)
         self.flash_timer = 0
         self.flash_time = 120
         self.thunder_sounds = [prepare.SFX["thunder{}".format(x)] for x in range(1, 5)]
         pg.mixer.music.load(prepare.MUSIC["CrEEP"])
-        pg.mixer.music.play()
+        pg.mixer.music.play(-1)
         
     def flash(self):
         dur = randint(60, 100)
@@ -86,39 +129,48 @@ class Splash(GameState):
             bat.image = next(bat.images)
             bat.rect = bat.image.get_rect(center=bat.rect.center)            
             dest = project(bat.rect.center, bat.angle, 1200)
-            ani = Animation(centerx=dest[0], centery=dest[1], duration=fly_time, round_values=True, transition=choice(transitions))
+            ani = Animation(centerx=dest[0], centery=dest[1],
+                                    duration=fly_time, round_values=True,
+                                    transition=choice(transitions))
             self.animations.add(ani)
             ani.start(bat.rect)
             
+    def fade_out(self):
+        ani = Animation(curtain_alpha=255, duration=6000,
+                                round_values=True, transition="out_quad")
+        ani.callback = self.leave_state
+        ani.start(self)
+        self.animations.add(ani)
+        
+    def leave_state(self):
+        self.done = True
+        self.next_state = "CARVING"
+        
     def get_event(self, event):
-        if event.type == pg.MOUSEBUTTONDOWN:
-            self.bats.append(Bat(event.pos, 0))
-        elif event.type == pg.KEYDOWN:
-            if event.key == pg.K_SPACE:
-                with open("bat_spots.json", "w") as f:
-                    json.dump([bat.rect.center for bat in self.bats], f)
-                
-       
+        pass
+
     def update(self, dt):
         self.timer += dt
         self.flash_timer += dt
         if self.timer >= 6000:
             for bat in self.bats:
                 bat.update(dt)
-        if self.timer > 11000:
-            self.done = True
-            self.next_state = "CARVING"
+        #if self.timer < 11000 and
         if self.flash_timer >= self.flash_time:
             self.flash()
             self.flash_timer -= self.flash_time
          
         self.animations.update(dt)
-        self.shade.set_alpha(self.shade_alpha)   
+        self.moon.update(dt)
+        self.shade.set_alpha(self.shade_alpha)
+        self.curtain.set_alpha(self.curtain_alpha)        
                 
     def draw(self, surface):
-        surface.fill(pg.Color(5, 5, 15))
+        surface.fill(pg.Color(10, 5, 20))
+        self.moon.draw(surface)
         surface.blit(self.web, self.web_rect)
         for bat in self.bats:
             bat.draw(surface)
-        surface.blit(self.shade, (0, 0))    
+        surface.blit(self.shade, (0, 0))
+        surface.blit(self.curtain, (0, 0))        
         
