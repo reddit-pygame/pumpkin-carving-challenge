@@ -11,24 +11,15 @@ class Carving(GameState):
         self.brush_size = 8
         self.drawing = False
         self.pumpkin = Pumpkin()
-        self.history = [] #
         self.line_start = None
         self.shade = pg.Surface(prepare.SCREEN_SIZE).convert()
         self.shade.fill(pg.Color(10, 5, 20))
         self.shade_alpha = 255
         self.shade.set_alpha(self.shade_alpha)
         self.animations = pg.sprite.Group()
+        self.brush_timer = 0
+        self.brush_cooldown = 50
         
-    def save_work_surf(self): #
-        self.history.append(self.pumpkin.work_surf.copy())
-        
-    def undo(self): #
-        try:
-            previous = self.history.pop()    
-            self.pumpkin.work_surf = previous
-        except IndexError:
-            pass
-    
     def startup(self, persistent):
         self.persist = persistent
         self.shade_alpha = 255
@@ -41,21 +32,22 @@ class Carving(GameState):
         if event.type == pg.MOUSEBUTTONDOWN:
             if event.button == 1:
                 self.drawing = True
-                self.save_work_surf() #
                 self.line_start = event.pos
         elif event.type == pg.MOUSEBUTTONUP:
             if event.button == 1:
                 self.drawing = False
-                                
-        elif event.type == pg.KEYUP:
-            if event.key == pg.K_UP:
-                self.brush_size += 1
-            elif event.key == pg.K_DOWN:
+
+    def update(self, dt):
+        self.brush_timer += dt
+        keys = pg.key.get_pressed()
+        if self.brush_timer > self.brush_cooldown:
+            if keys[pg.K_DOWN]:
                 self.brush_size = max(2, self.brush_size - 1)
-            elif event.key == pg.K_z and pg.key.get_pressed()[pg.K_LCTRL]: #
-                self.undo() #
-                
-    def update(self, dt):        
+                self.brush_timer = 0
+            elif keys[pg.K_UP]:
+                self.brush_size += 1
+                self.brush_timer = 0
+
         if self.drawing:
             mx, my = pg.mouse.get_pos()
             px, py = self.pumpkin.rect.topleft

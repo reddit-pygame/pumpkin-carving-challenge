@@ -155,7 +155,6 @@ class Splash(GameState):
         if self.timer >= 6000:
             for bat in self.bats:
                 bat.update(dt)
-        #if self.timer < 11000 and
         if self.flash_timer >= self.flash_time:
             self.flash()
             self.flash_timer -= self.flash_time

@@ -27,7 +27,7 @@ class Game(object):
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]
-        self.fullscreen = False
+        self.fullscreen = True
         
     def toggle_fullscreen(self):
         self.fullscreen = not self.fullscreen
@@ -85,7 +85,6 @@ class Game(object):
             self.update(dt)
             self.draw()
             pg.display.update()
-            pg.display.set_caption("{}".format(self.clock.get_fps()))
             
             
 class GameState(object):

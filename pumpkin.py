@@ -1,11 +1,11 @@
 from random import randint
 import pygame as pg
 import prepare
-#http://www.clipartlord.com/wp-content/uploads/2013/12/pumpkin6.png
 
 
 class Pumpkin(object):
     def __init__(self):
+        """Uses several colorkeyed surfaces to allow the user to draw a jack-o-lantern."""
         self.flicker_time = 55
         self.image = prepare.GFX["pumpkin"]
         self.rect = self.image.get_rect(center=prepare.SCREEN_RECT.center)
@@ -19,11 +19,9 @@ class Pumpkin(object):
         self.background = pg.Surface(self.image.get_size()).convert()
         self.background.set_colorkey((0, 0, 0))
         self.flicker()
-        
-    def reset(self):
-        self.working_image = self.image.copy()
 
     def flicker(self):
+        """Refill self.background with a new color to simulate flickering candlelight."""
         red = randint(210, 230)
         green = randint(150, 200)
         self.background.fill(pg.Color(red, green, 20))
