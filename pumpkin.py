@@ -5,7 +5,7 @@ import prepare
 
 class Pumpkin(object):
     def __init__(self):
-        """Uses several colorkeyed surfaces to allow the user to draw a jack-o-lantern."""
+        """Uses several color-keyed surfaces to allow the user to draw a jack-o-lantern."""
         self.flicker_time = 55
         self.image = prepare.GFX["pumpkin"]
         self.rect = self.image.get_rect(center=prepare.SCREEN_RECT.center)
